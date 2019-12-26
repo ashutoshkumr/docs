@@ -39,13 +39,18 @@
   std::cout << "Pass ? " <<  (x == 5 && y == 6);
   ```
 - Use `std::initializer_list` for instantiations (of custom classes) that require following semantics: `std::vector v {1, 2, 3, 4}`
+- Methods defined inside class are inlined by default.
+- Methods suffixed with `const` indicate that it doesn't modify `this`. Not doing this may result in weird errors when passing object as const referenceZ
 - Abstract class should either provide a definition for virtual function or declare them pure.
   ```c++
   class container {
     public:
         virtual double& operator[](unsigned long) = 0;
         virtual unsigned long size() = 0;
-        // if braces are not provided, it's an error!
+        // if braces are not provided, meaning it were a declration, it would've been an error!
         virtual ~container() {};
   };
   ```
+- `vtbl` or virtual function table, maintained by each class implementing virtual functions, contains indexed function pointers to all overridden virtual functions. The pointer to `vtbl` itself is stored in the very beginning of the object.
+- Add explicit `override` suffix to method declarations to catch any mistakes in function declaration (e.g. spelling mistake), even though its use is purely optional.
+- `static_cast` (casting singed to unsigned, etc) vs `dynamic_cast` (returns nullptr if cast is not valid, frequently used to recover type information. i.e. when determining wich derived class object does a base class pointer point to).
