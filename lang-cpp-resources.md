@@ -54,3 +54,17 @@
 - `vtbl` or virtual function table, maintained by each class implementing virtual functions, contains indexed function pointers to all overridden virtual functions. The pointer to `vtbl` itself is stored in the very beginning of the object.
 - Add explicit `override` suffix to method declarations to catch any mistakes in function declaration (e.g. spelling mistake), even though its use is purely optional.
 - `static_cast` (casting singed to unsigned, etc) vs `dynamic_cast` (returns nullptr if cast is not valid, frequently used to recover type information. i.e. when determining wich derived class object does a base class pointer point to).
+- Compiler implicitly generates following for classes:
+  ```c++
+  class container {
+    public:
+      container();                              // default constructor
+      container(const container&);              // copy constructor
+      container(container&&);                   // move constructor
+      container& operator=(const container&);   // copy assignment
+      container& operator=(container&&);        // move assignment
+      ~container();                             // destructor
+  };
+  ```
+- Suffix constructor with `= default` or `= delete` to be explicit about whether or not compiler should provide default implementations of various kinds of constructors.
+- Prefix constructor with `explicit` if it accepts only one argument to prohibit constructs like following: `MyClass c = 5`.
