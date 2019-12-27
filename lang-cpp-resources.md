@@ -68,3 +68,14 @@
   ```
 - Suffix constructor with `= default` or `= delete` to be explicit about whether or not compiler should provide default implementations of various kinds of constructors.
 - Prefix constructor with `explicit` if it accepts only one argument to prohibit constructs like following: `MyClass c = 5`.
+- `Abstract classes` should almost always `delete` copy constructor and assignment.
+- `&&` is an rvalue reference, usually returned by `std::move` or return value of a function.
+- Compilers are designed to do `copy elision` upon initialization, hence move constructors may not be invoked as often.
+- A move constructor should leave the object to be `moved from` in a state where it can be destroyed.
+- Any new type should ideally define following conventional operations:
+  - Comparisons: `==`, `!=`, `<`, `<=`, `>`, and `>=`
+  - Container operations: `size()`, `begin()`, `end()`
+  - Input and output operations: `>>` and `<<`
+  - User defined literals
+  - `swap()`
+  - Hash functions: `hash<>`
