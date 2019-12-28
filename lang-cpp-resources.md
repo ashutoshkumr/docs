@@ -79,3 +79,23 @@
   - User defined literals
   - `swap()`
   - Hash functions: `hash<>`
+- Template type deduction can sometimes cause unexpected results. e.g.
+  ```c++
+  std::vector<std::string> v1 {"Hello", "There"};   // will initialize with std::strings
+  std::vector v1 {"Hello", "There"};                // will initialize with const char*
+
+  ```
+- There are cases where type cannot be deducted, use `deduction guide` in such cases:
+  ```c++
+  template <typename T>
+  class container {
+    // type deduction not needed for this constructor
+    container(T);
+    // type deduction needed for this since construtor arguments are not necessary same as T
+    template <typename U>
+    container(U, U);
+  };
+  // deduction guide  
+  template <typename U>
+  container(U start, U end) -> container<int>;
+  ```
