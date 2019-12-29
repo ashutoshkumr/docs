@@ -40,7 +40,7 @@
   ```
 - Use `std::initializer_list` for instantiations (of custom classes) that require following semantics: `std::vector v {1, 2, 3, 4}`
 - Methods defined inside class are inlined by default.
-- Methods suffixed with `const` indicate that it doesn't modify `this`. Not doing this may result in weird errors when passing object as const referenceZ
+- Methods suffixed with `const` indicate that it doesn't modify `this`. Not doing this may result in weird errors when passing object as const reference. Typically `error: passing 'const xxx' as 'this' argument discards qualifiers [-fpermissive]`.
 - Abstract class should either provide a definition for virtual function or declare them pure.
   ```c++
   class container {
@@ -91,7 +91,7 @@
   class container {
     // type deduction not needed for this constructor
     container(T);
-    // type deduction needed for this since construtor arguments are not necessary same as T
+    // type deduction needed for this since construtor arguments are not necessarily same as T
     template <typename U>
     container(U, U);
   };
@@ -99,3 +99,34 @@
   template <typename U>
   container(U start, U end) -> container<int>;
   ```
+- A function template can be a member function, but not a `virtual` member, since the compileer would not know all instantiations of such a template in a program to generate a `vtbl`.
+- Example of function object (aka `functor`), `lambda expressions` and how they are used as `policy objects`.
+  ```c++
+  // functor
+  template<typename T>
+  class less_than {
+      const T val;
+      public:
+          less_than(const T& v): val{v} {}
+          // overload call operator
+          bool operator()(const T& x) const { return x < val; }
+  };
+  // a function that expects functor as a predicate, i.e. a policy object
+  template<typename Sequence, typename Callable>
+  int count(const Sequence& s, const Callable& c)
+  {
+      int i = 0;
+      for (auto& x: s) {
+          if (c(x)) ++i;
+      }
+      return i;
+  }
+  
+  int x = 3;
+  std::cout << "Values less than " << x << ": "
+    << count(std::vector {1, 2, 3, 4}, less_than {3}) << std::endl;
+  // the lambda expression below will generate function object exactly like the one mentioned above
+  std::cout << "Values less than " << x << ": "
+    << count(std::vector {1, 2, 3, 4}, [&](int a) { return a < x; }) << std::endl;
+  ```
+- Use `auto` as type for arguments to writing `generic lambda expressions`, but its support for function arguments was only added in `c++20`.
