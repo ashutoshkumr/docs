@@ -130,3 +130,5 @@
     << count(std::vector {1, 2, 3, 4}, [&](int a) { return a < x; }) << std::endl;
   ```
 - Use `auto` as type for arguments to writing `generic lambda expressions`, but its support for function arguments was only added in `c++20`.
+- `std::string` is an alias for `std::basic_string<char>`.
+- `std::string_view` is a read-only view of sequence of characters, designated by a pair of char* and length. i.e. `std::string_view sv = {&"hello"[0], 3};`
